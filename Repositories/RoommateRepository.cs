@@ -143,6 +143,7 @@ namespace Roommates.Repositories
                 {
                     cmd.CommandText = @"
                         INSERT INTO Roommate (FirstName, LastName, RentPortion, MoveInDate, RoomId)
+                        OUTPUT INSERTED.Id
                         VALUES (@firstName, @lastName, @rentPortion, @moveInDate, @roomId);";
 
                         cmd.Parameters.AddWithValue("@firstName", roommate.FirstName);
@@ -151,7 +152,9 @@ namespace Roommates.Repositories
                         cmd.Parameters.AddWithValue("@moveInDate", roommate.MoveInDate);
                         cmd.Parameters.AddWithValue("@roomId", (object)roommate.Room?.Id ?? DBNull.Value);
 
-                    cmd.ExecuteNonQuery();
+                    int id = (int)cmd.ExecuteScalar();
+                    roommate.Id = id;
+                    
                 }
             }
         }
